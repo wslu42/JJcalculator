@@ -1,3 +1,5 @@
+https://nbviewer.jupyter.org/
+
 # JJcalculator
 Example: 213kohm single junction with width 200nmx200nm, Tc 1.34K    
   
