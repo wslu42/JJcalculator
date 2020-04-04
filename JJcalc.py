@@ -64,7 +64,7 @@ def JJparameters(RN, JJwidthUM=0.2, metalTHK=250E-10, Tc=1.34):
 
 #     return JJparDFM,JJparUNI
 
-def JJpar(RN, sizeX, sizeY, Nser, Npar, metalTHK=250e-10, Tc=1.34):
+def JJpar(RN=1e3, sizeX=0.2e-6, sizeY=0.2e-6, metalTHK=250e-10, Tc=1.34, Nser = 16, Npar = 2):
    
     JJarea = sizeX*sizeY + (sizeX+sizeY)*metalTHK
     Rs_JJ = RN * JJarea /Nser *Npar
@@ -76,13 +76,13 @@ def JJpar(RN, sizeX, sizeY, Nser, Npar, metalTHK=250e-10, Tc=1.34):
     C0 = ParplateCap(area= 56e-12 , dielecTHK=10e-9, epsilon = 9.34*const.epsilon_0)
     EC0 = const.e*const.e /2 /C0
    
-    freqPlasma = np.sqrt(2 *const.e *IAB *2*const.pi /const.h /C_JJ) /2/const.pi
-    Q = freqPlasma*2*np.pi *RN *C_JJ
+    omegaPlasma = np.sqrt(2 *const.e *IAB *2*const.pi /const.h /C_JJ)
+    Q = omegaPlasma*2*np.pi *RN *C_JJ
     EJoEc = EJ_JJ/EC_JJ
     
     key =  [ 'RN_JJ',    'Rs_JJ', 'I_AB',           'EJ',  'C_JJQP',          'EC',   '$\omega_p$', 'Q', 'beta', 'EJ/EC']
-    unit=  [  'kohm','kohm*um^2',   'nA',            'K',      'fF',           'K',          'GHz',  '',     '',      '']
-    lst = [[ RN_JJ/1e3 , Rs_JJ*1e9 ,IAB*1e9, EJ_JJ/const.k , C_JJ*1e15, EC_JJ/const.k, freqPlasma/1e9,  Q ,   Q*Q ,  EJoEc ]]
+    unit=  [  'kohm','kohm*um^2',   'nA',            'K',      'fF',           'K',      'GHz*2pi',  '',     '',      '']
+    lst = [[ RN_JJ/1e3 , Rs_JJ*1e9 ,IAB*1e9, EJ_JJ/const.k , C_JJ*1e15, EC_JJ/const.k,omegaPlasma/1e9,  Q ,   Q*Q ,  EJoEc ]]
     JJparDFM = pd.DataFrame( data = list(zip(*lst)),      index = key ).transpose()
     JJparUNI = pd.DataFrame( data = dict(zip(key, unit)), index = [0] )
 
@@ -102,7 +102,7 @@ def toJJplst(srclst):
         lst.append(JJpd)
 
     key =    [ 'Device' ,  'RN_JJ', 'Rs/JJ',   'I_AB' , 'EJ' , 'C_JJQP' , 'EC', '$\omega_p$', 'Q',     'beta' , 'EJ/EC']
-    unit=    ['       ' ,   'kohm',  'kohm',     'nA' ,  'K' ,     'fF' ,  'K',        'GHz',  '',         '' ,      '']
+    unit=    ['       ' ,   'kohm',  'kohm',     'nA' ,  'K' ,     'fF' ,  'K',    'GHz*2pi',  '',         '' ,      '']
     JJplst =   pd.DataFrame(  data  = list(zip(*lst)), 
                             columns = [[dev[i] for dev in lst] for i in range(len(lst[0]))][0],
                               index = key ).transpose()
@@ -135,8 +135,6 @@ def CfromIVCoffset(IVCoffset):
     return "C_IVCoffset/JJ (fF/JJ) = " + format(round(C, roundN))
 
 def ParplateCap(area, dielecTHK, epsilon = 9.34*const.epsilon_0):
-    """
-    """
     C = epsilon *area /dielecTHK
     return C
 #    return "C_parallelPlate (fF) = " + format(C *1E15)
