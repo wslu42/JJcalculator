@@ -15,7 +15,7 @@ def si_forlst(lst):
 
 #
 def JJpar(RN=1e3, sizeX=0.2e-6, sizeY=0.2e-6, metalTHK=250e-10, 
-          Tc=1.34, T=20e-3, Nser=1, Npar=1, C_shunt=1e-33,
+          T=20e-3, Nser=1, Npar=1, C_shunt=1e-33,
           ezread=False, EunHz=False, material = 'Al'):
     
     TcdX = {'Al' : 1.34,
